@@ -32,5 +32,22 @@
 
             return Ok();
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateBookingModel updateBookingModel)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _bookingBusiness
+                .AlterABookingAsync(
+                    updateBookingModel.BookingId,
+                    updateBookingModel.RoomId,
+                    updateBookingModel.GuestEmail,
+                    updateBookingModel.ReservationStartDateUtc,
+                    updateBookingModel.ReservationEndDateUtc)
+                .ConfigureAwait(false);
+
+            return Ok();
+        }
     }
 }
