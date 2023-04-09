@@ -6,6 +6,7 @@
     using System.Transactions;
     using HotelBooking.Domain;
     using HotelBooking.Domain.Exceptions;
+    using HotelBooking.Domain.Models;
     using HotelBooking.Persistence;
 
     public class BookingBusiness : IBookingBusiness
@@ -132,13 +133,13 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Booking>> GetMyUpcomingBookingsForAGuestAsync(string guestEmail)
+        public async Task<IEnumerable<BookingModel>> GetMyUpcomingBookingsForAGuestAsync(string guestEmail)
         {
             return await _bookingDataManager.GetUpcomingBookingsForAGuestAsync(guestEmail, _dateTimeProvider.GetUtcDateTime(), 10).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Booking>> GetUpcomingBookingsByRoomAsync(byte roomId)
+        public async Task<IEnumerable<BookingModel>> GetUpcomingBookingsByRoomAsync(byte roomId)
         {
             return await _bookingDataManager.GetUpcomingBookingsForARoomAsync(roomId, _dateTimeProvider.GetUtcDateTime(), 10).ConfigureAwait(false);
         }

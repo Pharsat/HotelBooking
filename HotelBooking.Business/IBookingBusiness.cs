@@ -1,6 +1,6 @@
 ﻿namespace HotelBooking.Business
 {
-    using HotelBooking.Domain;
+    using HotelBooking.Domain.Models;
 
     public interface IBookingBusiness
     {
@@ -37,13 +37,13 @@
         /// </summary>
         /// <param name="guestEmail">The guest email.</param>
         /// <returns>A list of bookings.</returns>
-        Task<IEnumerable<Booking>> GetMyUpcomingBookingsForAGuestAsync(string guestEmail);
+        Task<IEnumerable<BookingModel>> GetMyUpcomingBookingsForAGuestAsync(string guestEmail);
 
         /// <summary>
         /// Gets all upcoming bookings for a room.
         /// </summary>
         /// <param name="roomId">The room id.</param>
         /// <returns>A list of bookings.</returns>
-        Task<IEnumerable<Booking>> GetUpcomingBookingsByRoomAsync(byte roomId);
+        Task<IEnumerable<BookingModel>> GetUpcomingBookingsByRoomAsync(byte roomId);
     }
 }

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using HotelBooking.Domain;
+    using HotelBooking.Domain.Models;
 
     public class BookingsDataManager : BaseDataManager<long>, IBookingsDataManager
     {
@@ -37,13 +38,13 @@
         }
 
         /// <inheritdoc/>
-        public Task<IEnumerable<Booking>> GetUpcomingBookingsForARoomAsync(byte roomId, DateTime currentDateTimeUtc, int top)
+        public Task<IEnumerable<BookingModel>> GetUpcomingBookingsForARoomAsync(byte roomId, DateTime currentDateTimeUtc, int top)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public Task<IEnumerable<Booking>> GetUpcomingBookingsForAGuestAsync(string guestEmail, DateTime currentDateTimeUtc, int top)
+        public Task<IEnumerable<BookingModel>> GetUpcomingBookingsForAGuestAsync(string guestEmail, DateTime currentDateTimeUtc, int top)
         {
             throw new NotImplementedException();
         }

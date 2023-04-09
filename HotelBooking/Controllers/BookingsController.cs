@@ -74,7 +74,7 @@
 
         [HttpGet]
         [Route("guest/{guestEmail}/bookings")]
-        public async Task<IEnumerable<Booking>> GetAllForGuest(
+        public async Task<IEnumerable<BookingModel>> GetAllForGuest(
             [FromRoute]
             [EmailAddress]
             string guestEmail)
@@ -86,7 +86,7 @@
 
         [HttpGet]
         [Route("room/{roomId}/bookings")]
-        public async Task<IEnumerable<Booking>> GetAll(
+        public async Task<IEnumerable<BookingModel>> GetAll(
             [FromRoute]
             [RegularExpression("^[0-9]*$")]
             byte roomId)

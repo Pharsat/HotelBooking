@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using HotelBooking.Domain;
+    using HotelBooking.Domain.Models;
 
     public interface IBookingsDataManager : IBaseDataManager<long>
     {
@@ -52,7 +53,7 @@
         /// <param name="currentDateTimeUtc">The current date time to filter the upcoming reservations.</param>
         /// <param name="top">The limit of reservations.</param>
         /// <returns>The top list of booking after the specified date.</returns>
-        Task<IEnumerable<Booking>> GetUpcomingBookingsForARoomAsync(byte roomId, DateTime currentDateTimeUtc, int top);
+        Task<IEnumerable<BookingModel>> GetUpcomingBookingsForARoomAsync(byte roomId, DateTime currentDateTimeUtc, int top);
 
         /// <summary>
         /// Gets the upcoming bookings for a guest.
@@ -61,6 +62,6 @@
         /// <param name="currentDateTimeUtc">The current date time to filter the upcoming reservations.</param>
         /// <param name="top">The limit of reservations.</param>
         /// <returns>The top list of booking after the specified date.</returns>
-        Task<IEnumerable<Booking>> GetUpcomingBookingsForAGuestAsync(string guestEmail, DateTime currentDateTimeUtc, int top);
+        Task<IEnumerable<BookingModel>> GetUpcomingBookingsForAGuestAsync(string guestEmail, DateTime currentDateTimeUtc, int top);
     }
 }
