@@ -1,5 +1,6 @@
 ﻿namespace HotelBooking.Controllers
 {
+    using System.ComponentModel.DataAnnotations;
     using HotelBooking.Business;
     using HotelBooking.Filter;
     using HotelBooking.Models;
@@ -52,7 +53,12 @@
 
         [HttpDelete]
         [Route("{bookingId}/{guestEmail}")]
-        public async Task<IActionResult> Delete([FromRoute] long bookingId, [FromRoute] string guestEmail)
+        public async Task<IActionResult> Delete(
+            [FromRoute]
+            long bookingId,
+            [FromRoute]
+            [EmailAddress]
+            string guestEmail)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
