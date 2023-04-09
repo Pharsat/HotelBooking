@@ -2,6 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using HotelBooking.Business;
+    using HotelBooking.Domain;
     using HotelBooking.Filter;
     using HotelBooking.Models;
     using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,19 @@
                 .ConfigureAwait(false);
 
             return Ok();
+        }
+
+
+        [HttpGet]
+        [Route("{guestEmail}")]
+        public async Task<IEnumerable<Booking>> GetAllForGuest(
+            [FromRoute]
+            [EmailAddress]
+            string guestEmail)
+        {
+            return await _bookingBusiness
+                .GetMyUpcomingBookingsForAGuestAsync(guestEmail)
+                .ConfigureAwait(false);
         }
     }
 }
