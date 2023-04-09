@@ -56,6 +56,7 @@
         [Route("{bookingId}/{guestEmail}")]
         public async Task<IActionResult> Delete(
             [FromRoute]
+            [RegularExpression("^[0-9]*$")]
             long bookingId,
             [FromRoute]
             [EmailAddress]
@@ -72,7 +73,7 @@
 
 
         [HttpGet]
-        [Route("{guestEmail}")]
+        [Route("guest/{guestEmail}/bookings")]
         public async Task<IEnumerable<Booking>> GetAllForGuest(
             [FromRoute]
             [EmailAddress]
@@ -80,6 +81,18 @@
         {
             return await _bookingBusiness
                 .GetMyUpcomingBookingsForAGuestAsync(guestEmail)
+                .ConfigureAwait(false);
+        }
+
+        [HttpGet]
+        [Route("room/{roomId}/bookings")]
+        public async Task<IEnumerable<Booking>> GetAll(
+            [FromRoute]
+            [RegularExpression("^[0-9]*$")]
+            byte roomId)
+        {
+            return await _bookingBusiness
+                .GetUpcomingBookingsByRoomAsync(roomId)
                 .ConfigureAwait(false);
         }
     }
