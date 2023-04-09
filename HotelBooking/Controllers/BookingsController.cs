@@ -72,28 +72,7 @@
         }
 
 
-        [HttpGet]
-        [Route("guest/{guestEmail}/bookings")]
-        public async Task<IEnumerable<BookingModel>> GetAllForGuest(
-            [FromRoute]
-            [EmailAddress]
-            string guestEmail)
-        {
-            return await _bookingBusiness
-                .GetMyUpcomingBookingsForAGuestAsync(guestEmail)
-                .ConfigureAwait(false);
-        }
+        
 
-        [HttpGet]
-        [Route("room/{roomId}/bookings")]
-        public async Task<IEnumerable<BookingModel>> GetAll(
-            [FromRoute]
-            [RegularExpression("^[0-9]*$")]
-            byte roomId)
-        {
-            return await _bookingBusiness
-                .GetUpcomingBookingsByRoomAsync(roomId)
-                .ConfigureAwait(false);
-        }
     }
 }
