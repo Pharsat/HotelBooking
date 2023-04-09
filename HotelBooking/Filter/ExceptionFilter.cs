@@ -21,10 +21,11 @@
             {
                 context.ModelState.AddModelError(nameof(BookingBusinessException), context.Exception.Message);
                 context.Result = new BadRequestObjectResult(context.ModelState);
+
+                return;
             }
 
             _logger.LogInformation(context.Exception.Message);
-
             var result = new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             context.Result = result;
         }
