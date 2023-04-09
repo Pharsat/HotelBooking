@@ -49,5 +49,18 @@
 
             return Ok();
         }
+
+        [HttpDelete]
+        [Route("{bookingId}/{guestEmail}")]
+        public async Task<IActionResult> Delete([FromRoute] long bookingId, [FromRoute] string guestEmail)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _bookingBusiness
+                .CancelABookingAsync(bookingId, guestEmail)
+                .ConfigureAwait(false);
+
+            return Ok();
+        }
     }
 }
