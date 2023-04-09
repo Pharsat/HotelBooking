@@ -1,5 +1,4 @@
-﻿
-namespace HotelBooking.Business
+﻿namespace HotelBooking.Business
 {
     using System;
     using System.Collections.Generic;
