@@ -3,8 +3,8 @@
     using System.ComponentModel.DataAnnotations;
     using HotelBooking.Business;
     using HotelBooking.Domain;
+    using HotelBooking.Domain.Models;
     using HotelBooking.Filter;
-    using HotelBooking.Models;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]

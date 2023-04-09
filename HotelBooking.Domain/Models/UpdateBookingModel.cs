@@ -1,13 +1,17 @@
-﻿namespace HotelBooking.Models
+﻿namespace HotelBooking.Domain.Models
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class CreateBookingModel
+    public class UpdateBookingModel
     {
-        public CreateBookingModel()
+        public UpdateBookingModel()
         {
             GuestEmail = string.Empty;
         }
+
+        [Required]
+        [RegularExpression("^[0-9]*$")]
+        public long BookingId { get; set; }
 
         [Required]
         [RegularExpression("^[0-9]*$")]
