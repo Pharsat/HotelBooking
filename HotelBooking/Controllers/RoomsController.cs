@@ -2,10 +2,12 @@
 {
     using HotelBooking.Business;
     using HotelBooking.Domain;
+    using HotelBooking.Filter;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
     [Route("[controller]")]
+    [ExceptionFilter]
     public class RoomsController : ControllerBase
     {
         private readonly IRoomBusiness _roomBusiness;
