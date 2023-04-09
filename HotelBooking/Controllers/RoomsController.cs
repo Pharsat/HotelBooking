@@ -24,6 +24,7 @@
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 3600)]
         public async Task<IEnumerable<Room>> GetAll()
         {
             return await _roomBusiness.GetAllAsync().ConfigureAwait(false);
