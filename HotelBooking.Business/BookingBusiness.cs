@@ -73,7 +73,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task AlterABookingAsync(int bookingId, byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate)
+        public async Task AlterABookingAsync(long bookingId, byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate)
         {
             MakeCommonValidationsForBooking(reservationStartDate, reservationEndDate);
 

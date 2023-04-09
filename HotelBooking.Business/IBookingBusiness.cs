@@ -23,7 +23,7 @@
         /// <param name="reservationStartDate">The utc datetime for the booking.</param>
         /// <param name="reservationEndDate">The utc datetime  for the booking.</param>
         /// <returns> an instance of <see cref="Task"/></returns>
-        Task AlterABookingAsync(int bookingId, byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate);
+        Task AlterABookingAsync(long bookingId, byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate);
 
         /// <summary>
         /// Cancels a booking.
