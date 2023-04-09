@@ -31,6 +31,7 @@
 
         [HttpGet]
         [Route("{roomId}/bookings")]
+        [ResponseCache(Duration = 10)]
         public async Task<IEnumerable<BookingModel>> GetAll(
             [FromRoute]
             [RegularExpression("^[0-9]*$")]

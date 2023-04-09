@@ -18,6 +18,7 @@
 
         [HttpGet]
         [Route("{guestEmail}/bookings")]
+        [ResponseCache(Duration = 10)]
         public async Task<IEnumerable<BookingModel>> GetAllForGuest(
             [FromRoute]
             [EmailAddress]
