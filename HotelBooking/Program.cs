@@ -5,8 +5,8 @@ using HotelBooking.Persistence.SqlServer;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -15,6 +15,10 @@ builder.Services.AddScoped<IRoomBusiness, RoomBusiness>();
 builder.Services.AddScoped<IBookingsDataManager, BookingsDataManager>();
 builder.Services.AddScoped<IGuestsDataManager, GuestsDataManager>();
 builder.Services.AddScoped<IRoomsDataManager, RoomsDataManager>();
+builder.Services.AddScoped<IDateTimeUtcProvider, DateTimeUtcProvider>();
+
+ConfigurationManager configuration = builder.Configuration;
+builder.Services.AddScoped<ISqlConnection>(_ => new SqlConnectionWrapper(configuration.GetConnectionString("HotelBooker")));
 
 var app = builder.Build();
 
