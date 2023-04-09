@@ -132,7 +132,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Booking>> GetMyUpcomingBookingsAsync(string guestEmail)
+        public async Task<IEnumerable<Booking>> GetMyUpcomingBookingsForAGuestAsync(string guestEmail)
         {
             return await _bookingDataManager.GetUpcomingBookingsForAGuestAsync(guestEmail, _dateTimeProvider.GetUtcDateTime(), 10).ConfigureAwait(false);
         }

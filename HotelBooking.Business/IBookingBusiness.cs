@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="guestEmail">The guest email.</param>
         /// <returns>A list of bookings.</returns>
-        Task<IEnumerable<Booking>> GetMyUpcomingBookingsAsync(string guestEmail);
+        Task<IEnumerable<Booking>> GetMyUpcomingBookingsForAGuestAsync(string guestEmail);
 
         /// <summary>
         /// Gets all upcoming bookings for a room.
