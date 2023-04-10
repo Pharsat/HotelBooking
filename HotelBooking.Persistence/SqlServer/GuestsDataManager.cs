@@ -15,8 +15,6 @@
         /// <inheritdoc/>
         public async Task<int> SaveGuestAsync(string email)
         {
-            var rooms = new List<Room>();
-
             const string query = "INSERT INTO [dbo].[Guests] ([Email]) VALUES (@GuestEmail); SELECT SCOPE_IDENTITY();";
 
             using var connection = _connection;
@@ -34,8 +32,6 @@
         /// <inheritdoc/>
         public async Task<bool> ExistsByEmailAsync(string email)
         {
-            var rooms = new List<Room>();
-
             const string query = "SELECT COUNT(*) FROM [dbo].[Guests] WHERE Email = @GuestEmail";
 
             using var connection = _connection;
