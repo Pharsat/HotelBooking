@@ -8,7 +8,7 @@
     {
         private readonly ISqlConnection _connection;
 
-        public BaseDataManager(ISqlConnection connection)
+        protected BaseDataManager(ISqlConnection connection)
         {
             _connection = connection;
         }
@@ -20,14 +20,14 @@
                            $"FROM [dbo].[{entityName}] " +
                            "WHERE Id = @Id";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@Id", id);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
-            var count = (int)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            var count = Convert.ToInt32(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return count > 0;
         }
@@ -38,14 +38,14 @@
             string query = $"DELETE COUNT(*) FROM [dbo].[{entityName}] " +
                            "WHERE Id = @Id";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@Id", id);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+            await _connection.CloseAsync().ConfigureAwait(false);
         }
     }
 }

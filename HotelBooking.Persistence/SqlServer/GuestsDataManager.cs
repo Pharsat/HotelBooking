@@ -18,14 +18,14 @@
             const string query = "INSERT INTO [dbo].[Guests] ([Email]) " +
                                  "VALUES (@GuestEmail); SELECT SCOPE_IDENTITY();";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@GuestEmail", email);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
-            var idValue = (int)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            var idValue = Convert.ToInt32(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return idValue;
         }
@@ -37,14 +37,14 @@
                                  "FROM [dbo].[Guests] " +
                                  "WHERE Email = @GuestEmail";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@GuestEmail", email);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
-            var count = (int)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            var count = Convert.ToInt32(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return count > 0;
         }
@@ -56,20 +56,22 @@
                                  "FROM [dbo].[Guests] " +
                                  "WHERE Email = @GuestEmail";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@GuestEmail", email);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
-                return new Guest(reader.GetString(reader.GetOrdinal("Email")))
+                var guest = new Guest(reader.GetString(reader.GetOrdinal("Email")))
                 {
                     Id = reader.GetByte(reader.GetOrdinal("Id"))
                 };
+
+                await _connection.CloseAsync().ConfigureAwait(false);
+
+                return guest;
             }
 
             throw new EntityDoesNotExistException($"Guest with email {email} does not exist in our records.");
@@ -82,20 +84,24 @@
                                  "FROM [dbo].[Guests] " +
                                  "WHERE Id = @GuestId";
 
-            using var connection = _connection;
+            
 
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@GuestId", id);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
-                return new Guest(reader.GetString(reader.GetOrdinal("Email")))
+                var guest = new Guest(reader.GetString(reader.GetOrdinal("Email")))
                 {
                     Id = reader.GetByte(reader.GetOrdinal("Id"))
                 };
+
+                await _connection.CloseAsync().ConfigureAwait(false);
+
+                return guest;
             }
 
             throw new EntityDoesNotExistException($"Guest with id {id} does not exist in our records.");

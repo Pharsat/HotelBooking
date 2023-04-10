@@ -20,11 +20,9 @@
             const string query = "SELECT [Id], [Name] " +
                                  "FROM [dbo].[Rooms]";
 
-            using var connection = _connection;
+            var command = _connection.CreateCommand(query);
 
-            var command = connection.CreateCommand(query);
-
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             var rooms = new List<Room>();
@@ -38,6 +36,8 @@
 
                 rooms.Add(room);
             }
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return rooms;
         }

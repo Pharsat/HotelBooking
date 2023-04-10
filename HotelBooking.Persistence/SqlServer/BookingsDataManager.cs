@@ -24,18 +24,18 @@
                                  "VALUES (@RoomId, @GuestId, @ReservationStartDateUtc, @ReservationEndDateUtc, @BookingCreationTime); " +
                                  "SELECT SCOPE_IDENTITY();";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@RoomId", booking.RoomId);
             command.Parameters.AddWithValue("@GuestId", booking.GuestId);
             command.Parameters.AddWithValue("@ReservationStartDateUtc", booking.ReservationStartDateUtc);
             command.Parameters.AddWithValue("@ReservationEndDateUtc", booking.ReservationEndDateUtc);
             command.Parameters.AddWithValue("@BookingCreationTime", booking.BookingCreationTime);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
             var idValue = (long)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return idValue;
         }
@@ -50,17 +50,18 @@
                                  "[BookingModificationTime] = @BookingModificationTime " +
                                  "WHERE [Id] = @BookingId;";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@BookingId", booking.Id);
             command.Parameters.AddWithValue("@RoomId", booking.RoomId);
             command.Parameters.AddWithValue("@ReservationStartDateUtc", booking.ReservationStartDateUtc);
             command.Parameters.AddWithValue("@ReservationEndDateUtc", booking.ReservationEndDateUtc);
             command.Parameters.AddWithValue("@BookingModificationTime", booking.BookingModificationTime);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
+
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+            await _connection.CloseAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -74,16 +75,16 @@
                                  ") AND " +
                                  "[RoomId] = @RoomId;";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@ReservationStartDateUtc", checkFrom);
             command.Parameters.AddWithValue("@ReservationEndDateUtc", checkTo);
             command.Parameters.AddWithValue("@RoomId", roomId);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
-            var count = (int)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            var count = Convert.ToInt32(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return count == 0;
         }
@@ -100,17 +101,17 @@
                                  "[RoomId] = @RoomId AND" +
                                  "[Id] != @BookingId";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@BookingId", bookingId);
             command.Parameters.AddWithValue("@ReservationStartDateUtc", checkFrom);
             command.Parameters.AddWithValue("@ReservationEndDateUtc", checkTo);
             command.Parameters.AddWithValue("@RoomId", roomId);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
-            var count = (int)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            var count = Convert.ToInt32(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return count == 0;
         }
@@ -121,17 +122,15 @@
                                  "FROM [dbo].[Bookings] " +
                                  "WHERE [Id] = @BookingId;";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@BookingId", bookingId);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
-                return new Booking
+                var booking = new Booking
                 {
                     Id = reader.GetByte(reader.GetOrdinal("Id")),
                     RoomId = reader.GetByte(reader.GetOrdinal("RoomId")),
@@ -141,6 +140,10 @@
                     BookingCreationTime = reader.GetDateTimeOffset(reader.GetOrdinal("BookingCreationTime")),
                     BookingModificationTime = reader.GetDateTimeOffset(reader.GetOrdinal("BookingModificationTime"))
                 };
+
+                await _connection.CloseAsync().ConfigureAwait(false);
+
+                return booking;
             }
 
             throw new EntityDoesNotExistException($"Booking with Id {bookingId} does not exist in our records.");
@@ -159,14 +162,12 @@
                                  "WHERE [RoomId] = @RoomId AND " +
                                  "[ReservationStartDateUtc] >= @CurrentDateTimeUtc;";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@RoomId", roomId);
             command.Parameters.AddWithValue("@CurrentDateTimeUtc", currentDateTimeUtc);
             command.Parameters.AddWithValue("@Top", top);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             var bookings = new List<BookingModel>();
@@ -182,6 +183,8 @@
 
                 bookings.Add(booking);
             }
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return bookings;
         }
@@ -200,14 +203,12 @@
                                  "WHERE [dbo].[Guests].[Email] = @GuestEmail AND " +
                                  "[ReservationStartDateUtc] >= @CurrentDateTimeUtc;";
 
-            using var connection = _connection;
-
-            var command = connection.CreateCommand(query);
+            var command = _connection.CreateCommand(query);
             command.Parameters.AddWithValue("@GuestEmail", guestEmail);
             command.Parameters.AddWithValue("@CurrentDateTimeUtc", currentDateTimeUtc);
             command.Parameters.AddWithValue("@Top", top);
 
-            await connection.OpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             var bookings = new List<BookingModel>();
@@ -223,6 +224,8 @@
 
                 bookings.Add(booking);
             }
+
+            await _connection.CloseAsync().ConfigureAwait(false);
 
             return bookings;
         }
