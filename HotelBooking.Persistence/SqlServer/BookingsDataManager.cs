@@ -11,7 +11,7 @@
     {
         private readonly ISqlConnection _connection;
 
-        public BookingsDataManager(ISqlConnection connection)
+        public BookingsDataManager(ISqlConnection connection) : base(connection)
         {
             _connection = connection;
         }

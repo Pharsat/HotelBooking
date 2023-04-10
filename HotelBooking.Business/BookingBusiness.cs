@@ -1,4 +1,6 @@
-﻿namespace HotelBooking.Business
+﻿using HotelBooking.Persistence.SqlServer;
+
+namespace HotelBooking.Business
 {
     using System;
     using System.Collections.Generic;
@@ -11,6 +13,7 @@
 
     public class BookingBusiness : IBookingBusiness
     {
+        private static readonly string DataBaseEntityName = "Bookings";
         private readonly IBookingsDataManager _bookingDataManager;
         private readonly IDateTimeUtcProvider _dateTimeProvider;
         private readonly IRoomsDataManager _roomsDataManager;
@@ -38,7 +41,7 @@
 
             using var transactionScope = new TransactionScope();
 
-            if (!await _roomsDataManager.ExistsByIdAsync(roomId).ConfigureAwait(false))
+            if (!await _roomsDataManager.ExistsByIdAsync(roomId, RoomsDataManager.DataBaseEntityName).ConfigureAwait(false))
             {
                 throw new BookingBusinessException("The room does not exists.");
             }
@@ -86,12 +89,12 @@
 
             using var transactionScope = new TransactionScope();
 
-            if (!await _roomsDataManager.ExistsByIdAsync(roomId).ConfigureAwait(false))
+            if (!await _roomsDataManager.ExistsByIdAsync(roomId, RoomsDataManager.DataBaseEntityName).ConfigureAwait(false))
             {
                 throw new BookingBusinessException("The room does not exists.");
             }
 
-            if (!await _bookingDataManager.ExistsByIdAsync(bookingId).ConfigureAwait(false))
+            if (!await _bookingDataManager.ExistsByIdAsync(bookingId, DataBaseEntityName).ConfigureAwait(false))
             {
                 throw new BookingBusinessException("The booking does not exists.");
             }
@@ -120,7 +123,7 @@
         {
             using var transactionScope = new TransactionScope();
 
-            if (!await _bookingDataManager.ExistsByIdAsync(bookingId).ConfigureAwait(false))
+            if (!await _bookingDataManager.ExistsByIdAsync(bookingId, DataBaseEntityName).ConfigureAwait(false))
             {
                 throw new BookingBusinessException("The booking does not exists.");
             }
@@ -133,7 +136,7 @@
                 throw new BookingBusinessException("The guest does not owns the reservation.");
             }
 
-            await _bookingDataManager.RemoveById(bookingId).ConfigureAwait(false);
+            await _bookingDataManager.RemoveById(bookingId, DataBaseEntityName).ConfigureAwait(false);
 
             transactionScope.Complete();
         }

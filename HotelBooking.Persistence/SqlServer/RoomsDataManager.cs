@@ -6,9 +6,10 @@
 
     public class RoomsDataManager : BaseDataManager<byte>, IRoomsDataManager
     {
+        public static readonly string DataBaseEntityName = "Bookings";
         private readonly ISqlConnection _connection;
 
-        public RoomsDataManager(ISqlConnection connection)
+        public RoomsDataManager(ISqlConnection connection) : base(connection)
         {
             _connection = connection;
         }

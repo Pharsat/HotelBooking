@@ -12,13 +12,15 @@
         /// Checks if entity exists by its Id.
         /// </summary>
         /// <param name="id">The entity Id</param>
+        /// <param name="entityName">The entity name.</param>
         /// <returns>A flag that indicates whether a value exists by its id.</returns>
-        Task<bool> ExistsByIdAsync(TIdT id);
+        Task<bool> ExistsByIdAsync(TIdT id, string entityName);
 
         /// <summary>
         /// Removes an entity.
         /// </summary>
         /// <param name="id">The entity id.</param>
-        Task RemoveById(TIdT id);
+        /// <param name="entityName"></param>
+        Task RemoveById(TIdT id, string entityName);
     }
 }

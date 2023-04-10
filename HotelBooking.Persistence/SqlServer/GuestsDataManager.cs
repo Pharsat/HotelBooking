@@ -7,7 +7,7 @@
     {
         private readonly ISqlConnection _connection;
 
-        public GuestsDataManager(ISqlConnection connection)
+        public GuestsDataManager(ISqlConnection connection) : base(connection)
         {
             _connection = connection;
         }

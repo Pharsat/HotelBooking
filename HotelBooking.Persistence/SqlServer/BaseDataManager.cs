@@ -1,20 +1,51 @@
 ﻿namespace HotelBooking.Persistence.SqlServer
 {
     using System;
+    using System.Data.Common;
     using System.Threading.Tasks;
 
     public class BaseDataManager<TIdT> : IBaseDataManager<TIdT>
     {
-        /// <inheritdoc/>
-        public Task<bool> ExistsByIdAsync(TIdT id)
+        private readonly ISqlConnection _connection;
+
+        public BaseDataManager(ISqlConnection connection)
         {
-            throw new NotImplementedException();
+            _connection = connection;
         }
 
         /// <inheritdoc/>
-        public Task RemoveById(TIdT id)
+        public async Task<bool> ExistsByIdAsync(TIdT id, string entityName)
         {
-            throw new NotImplementedException();
+            string query = "SELECT COUNT(*) " +
+                           $"FROM [dbo].[{entityName}] " +
+                           "WHERE Id = @Id";
+
+            using var connection = _connection;
+
+            var command = connection.CreateCommand(query);
+            command.Parameters.AddWithValue("@Id", id);
+
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            var count = (int)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            return count > 0;
+        }
+
+        /// <inheritdoc/>
+        public async Task RemoveById(TIdT id, string entityName)
+        {
+            string query = $"DELETE COUNT(*) FROM [dbo].[{entityName}] " +
+                           "WHERE Id = @Id";
+
+            using var connection = _connection;
+
+            var command = connection.CreateCommand(query);
+            command.Parameters.AddWithValue("@Id", id);
+
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }
