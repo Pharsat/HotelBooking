@@ -18,21 +18,20 @@
         {
             var rooms = new List<Room>();
 
-            using var connection = _connection;
-
             const string query = "SELECT [Id], [Name] FROM [dbo].[Rooms]";
 
-            var command = connection.CreateCommand();
-            command.CommandText = query;
+            using var connection = _connection;
+
+            var command = connection.CreateCommand(query);
 
             await connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
-                var room = new Room(reader["Name"].ToString()!)
+                var room = new Room(reader.GetString(reader.GetOrdinal("Name")))
                 {
-                    Id = (byte)reader["Id"]
+                    Id = reader.GetByte(reader.GetOrdinal("Id"))
                 };
 
                 rooms.Add(room);

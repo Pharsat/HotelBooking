@@ -9,6 +9,6 @@
 
         Task CloseAsync();
 
-        SqlCommand CreateCommand();
+        SqlCommand CreateCommand(string query);
     }
 }

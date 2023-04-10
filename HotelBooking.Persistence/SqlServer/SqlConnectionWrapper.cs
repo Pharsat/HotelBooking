@@ -26,9 +26,9 @@
             await _connection.CloseAsync().ConfigureAwait(false);
         }
 
-        public SqlCommand CreateCommand()
+        public SqlCommand CreateCommand(string query)
         {
-            return _connection.CreateCommand();
+            return new SqlCommand(query, _connection);
         }
     }
 }
