@@ -20,7 +20,7 @@
 
             using var connection = _connection;
 
-            const string query = "SELECT [Id], [Name] FROM [HotelBooker].[dbo].[Rooms]";
+            const string query = "SELECT [Id], [Name] FROM [dbo].[Rooms]";
 
             var command = connection.CreateCommand();
             command.CommandText = query;
