@@ -7,9 +7,10 @@
     public class RoomsDataManager : BaseDataManager<byte>, IRoomsDataManager
     {
         private readonly ISqlConnection _connection;
+
         public RoomsDataManager(ISqlConnection connection)
         {
-            this._connection = connection;
+            _connection = connection;
         }
 
         /// <inheritdoc/>
@@ -17,31 +18,24 @@
         {
             var rooms = new List<Room>();
 
-            try
+            using var connection = _connection;
+
+            const string query = "SELECT [Id], [Name] FROM [HotelBooker].[dbo].[Rooms]";
+
+            var command = connection.CreateCommand();
+            command.CommandText = query;
+
+            await connection.OpenAsync().ConfigureAwait(false);
+            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
+            while (await reader.ReadAsync().ConfigureAwait(false))
             {
-                await _connection.OpenAsync().ConfigureAwait(false);
-
-                const string query = "SELECT [Id], [Name] FROM [HotelBooker].[dbo].[Rooms]";
-
-                var command = _connection.CreateCommand();
-                command.CommandText = query;
-
-                await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
-
-
-                while (await reader.ReadAsync().ConfigureAwait(false))
+                var room = new Room(reader["Name"].ToString()!)
                 {
-                    var room = new Room(reader["Name"].ToString()!)
-                    {
-                        Id = (byte)reader["Id"]
-                    };
+                    Id = (byte)reader["Id"]
+                };
 
-                    rooms.Add(room);
-                }
-            }
-            finally
-            {
-                await _connection.CloseAsync().ConfigureAwait(false);
+                rooms.Add(room);
             }
 
             return rooms;

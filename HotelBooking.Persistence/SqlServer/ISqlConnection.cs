@@ -5,14 +5,10 @@
 
     public interface ISqlConnection : IDisposable
     {
-        string GetConnectionString();
-
         Task OpenAsync();
 
         Task CloseAsync();
 
         SqlCommand CreateCommand();
-
-
     }
 }
