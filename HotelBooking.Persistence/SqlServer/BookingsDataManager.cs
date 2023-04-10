@@ -8,10 +8,34 @@
 
     public class BookingsDataManager : BaseDataManager<long>, IBookingsDataManager
     {
-        /// <inheritdoc/>
-        public Task SaveBookingAsync(Booking booking)
+        private readonly ISqlConnection _connection;
+
+        public BookingsDataManager(ISqlConnection connection)
         {
-            throw new NotImplementedException();
+            _connection = connection;
+        }
+
+        /// <inheritdoc/>
+        public async Task<long> SaveBookingAsync(Booking booking)
+        {
+            const string query = "INSERT INTO [dbo].[Bookings] ([RoomId], [GuestId], [ReservationStartDateUtc], [ReservationEndDateUtc], [BookingCreationTime]) " +
+                                 "VALUES (@RoomId, @GuestId, @ReservationStartDateUtc, @ReservationEndDateUtc, @BookingCreationTime); " +
+                                 "SELECT SCOPE_IDENTITY();";
+
+            using var connection = _connection;
+
+            var command = connection.CreateCommand(query);
+            command.Parameters.AddWithValue("@RoomId", booking.RoomId);
+            command.Parameters.AddWithValue("@GuestId", booking.GuestId);
+            command.Parameters.AddWithValue("@ReservationStartDateUtc", booking.ReservationStartDateUtc);
+            command.Parameters.AddWithValue("@ReservationEndDateUtc", booking.ReservationEndDateUtc);
+            command.Parameters.AddWithValue("@BookingCreationTime", booking.BookingCreationTime);
+
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            var idValue = (long)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            return idValue;
         }
 
         /// <inheritdoc/>

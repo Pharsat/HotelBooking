@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="booking">The booking object to store.</param>
         /// <returns>An Instance of <see cref="Booking"/></returns>
-        Task SaveBookingAsync(Booking booking);
+        Task<long> SaveBookingAsync(Booking booking);
 
         /// <summary>
         /// Modify a booking to persistence.
