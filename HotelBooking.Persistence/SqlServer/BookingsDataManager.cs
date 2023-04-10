@@ -9,6 +9,7 @@
 
     public class BookingsDataManager : BaseDataManager<long>, IBookingsDataManager
     {
+        public static readonly string DataBaseEntityName = "Bookings";
         private readonly ISqlConnection _connection;
 
         public BookingsDataManager(ISqlConnection connection) : base(connection)

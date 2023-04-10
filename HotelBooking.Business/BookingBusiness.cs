@@ -1,6 +1,4 @@
-﻿using HotelBooking.Persistence.SqlServer;
-
-namespace HotelBooking.Business
+﻿namespace HotelBooking.Business
 {
     using System;
     using System.Collections.Generic;
@@ -10,10 +8,10 @@ namespace HotelBooking.Business
     using HotelBooking.Domain.Exceptions;
     using HotelBooking.Domain.Models;
     using HotelBooking.Persistence;
+    using HotelBooking.Persistence.SqlServer;
 
     public class BookingBusiness : IBookingBusiness
     {
-        private static readonly string DataBaseEntityName = "Bookings";
         private readonly IBookingsDataManager _bookingDataManager;
         private readonly IDateTimeUtcProvider _dateTimeProvider;
         private readonly IRoomsDataManager _roomsDataManager;
@@ -94,7 +92,7 @@ namespace HotelBooking.Business
                 throw new BookingBusinessException("The room does not exists.");
             }
 
-            if (!await _bookingDataManager.ExistsByIdAsync(bookingId, DataBaseEntityName).ConfigureAwait(false))
+            if (!await _bookingDataManager.ExistsByIdAsync(bookingId, BookingsDataManager.DataBaseEntityName).ConfigureAwait(false))
             {
                 throw new BookingBusinessException("The booking does not exists.");
             }
@@ -123,7 +121,7 @@ namespace HotelBooking.Business
         {
             using var transactionScope = new TransactionScope();
 
-            if (!await _bookingDataManager.ExistsByIdAsync(bookingId, DataBaseEntityName).ConfigureAwait(false))
+            if (!await _bookingDataManager.ExistsByIdAsync(bookingId, BookingsDataManager.DataBaseEntityName).ConfigureAwait(false))
             {
                 throw new BookingBusinessException("The booking does not exists.");
             }
@@ -136,7 +134,7 @@ namespace HotelBooking.Business
                 throw new BookingBusinessException("The guest does not owns the reservation.");
             }
 
-            await _bookingDataManager.RemoveById(bookingId, DataBaseEntityName).ConfigureAwait(false);
+            await _bookingDataManager.RemoveById(bookingId, BookingsDataManager.DataBaseEntityName).ConfigureAwait(false);
 
             transactionScope.Complete();
         }
