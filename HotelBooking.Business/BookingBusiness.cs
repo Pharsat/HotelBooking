@@ -37,7 +37,7 @@
 
             MakeCommonValidationsForBooking(reservationStartDate, reservationEndDate);
 
-            using var transactionScope = new TransactionScope();
+            using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
             if (!await _roomsDataManager.ExistsByIdAsync(roomId, RoomsDataManager.DataBaseEntityName).ConfigureAwait(false))
             {
@@ -85,7 +85,7 @@
 
             MakeCommonValidationsForBooking(reservationStartDate, reservationEndDate);
 
-            using var transactionScope = new TransactionScope();
+            using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
             if (!await _roomsDataManager.ExistsByIdAsync(roomId, RoomsDataManager.DataBaseEntityName).ConfigureAwait(false))
             {
@@ -100,6 +100,12 @@
             if (await _bookingDataManager.IsRoomAvailableForBookingAsync(bookingId, roomId, reservationStartDate, reservationEndDate).ConfigureAwait(false))
             {
                 var booking = await _bookingDataManager.GetByIdAsync(bookingId).ConfigureAwait(false);
+                var guest = await _guestsDataManager.GetGuestByIdAsync(booking.GuestId).ConfigureAwait(false);
+
+                if (!guestEmail.Equals(guest.Email, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    throw new BookingBusinessException($"The given email {guestEmail} does not match the email of the owner of this booking.");
+                }
 
                 booking.RoomId = roomId;
                 booking.ReservationStartDateUtc = reservationStartDate;
@@ -119,7 +125,7 @@
         /// <inheritdoc/>
         public async Task CancelABookingAsync(long bookingId, string guestEmail)
         {
-            using var transactionScope = new TransactionScope();
+            using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
             if (!await _bookingDataManager.ExistsByIdAsync(bookingId, BookingsDataManager.DataBaseEntityName).ConfigureAwait(false))
             {

@@ -132,13 +132,13 @@
             {
                 var booking = new Booking
                 {
-                    Id = reader.GetByte(reader.GetOrdinal("Id")),
+                    Id = reader.GetInt64(reader.GetOrdinal("Id")),
                     RoomId = reader.GetByte(reader.GetOrdinal("RoomId")),
-                    GuestId = reader.GetByte(reader.GetOrdinal("GuestId")),
+                    GuestId = reader.GetInt64(reader.GetOrdinal("GuestId")),
                     ReservationStartDateUtc = reader.GetDateTime(reader.GetOrdinal("ReservationStartDateUtc")),
                     ReservationEndDateUtc = reader.GetDateTime(reader.GetOrdinal("ReservationEndDateUtc")),
                     BookingCreationTime = reader.GetDateTimeOffset(reader.GetOrdinal("BookingCreationTime")),
-                    BookingModificationTime = reader.GetDateTimeOffset(reader.GetOrdinal("BookingModificationTime"))
+                    BookingModificationTime = !reader.IsDBNull(reader.GetOrdinal("BookingModificationTime")) ? reader.GetDateTimeOffset(reader.GetOrdinal("BookingModificationTime")) : null
                 };
 
                 await _connection.CloseAsync().ConfigureAwait(false);
@@ -176,7 +176,7 @@
             {
                 var booking = new BookingModel(reader.GetString(reader.GetOrdinal("RoomName")))
                 {
-                    BookingId = reader.GetByte(reader.GetOrdinal("Id")),
+                    BookingId = reader.GetInt64(reader.GetOrdinal("Id")),
                     ReservationStartDateUtc = reader.GetDateTime(reader.GetOrdinal("ReservationStartDateUtc")),
                     ReservationEndDateUtc = reader.GetDateTime(reader.GetOrdinal("ReservationEndDateUtc"))
                 };
@@ -217,7 +217,7 @@
             {
                 var booking = new BookingModel(reader.GetString(reader.GetOrdinal("RoomName")))
                 {
-                    BookingId = reader.GetByte(reader.GetOrdinal("Id")),
+                    BookingId = reader.GetInt64(reader.GetOrdinal("Id")),
                     ReservationStartDateUtc = reader.GetDateTime(reader.GetOrdinal("ReservationStartDateUtc")),
                     ReservationEndDateUtc = reader.GetDateTime(reader.GetOrdinal("ReservationEndDateUtc"))
                 };

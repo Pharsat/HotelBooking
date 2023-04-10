@@ -66,7 +66,7 @@
             {
                 var guest = new Guest(reader.GetString(reader.GetOrdinal("Email")))
                 {
-                    Id = reader.GetByte(reader.GetOrdinal("Id"))
+                    Id = reader.GetInt64(reader.GetOrdinal("Id"))
                 };
 
                 await _connection.CloseAsync().ConfigureAwait(false);
@@ -96,7 +96,7 @@
             {
                 var guest = new Guest(reader.GetString(reader.GetOrdinal("Email")))
                 {
-                    Id = reader.GetByte(reader.GetOrdinal("Id"))
+                    Id = reader.GetInt64(reader.GetOrdinal("Id"))
                 };
 
                 await _connection.CloseAsync().ConfigureAwait(false);

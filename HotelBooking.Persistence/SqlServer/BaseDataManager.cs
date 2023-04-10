@@ -35,7 +35,7 @@
         /// <inheritdoc/>
         public async Task RemoveById(TIdT id, string entityName)
         {
-            string query = $"DELETE COUNT(*) FROM [dbo].[{entityName}] " +
+            string query = $"DELETE FROM [dbo].[{entityName}] " +
                            "WHERE Id = @Id";
 
             var command = _connection.CreateCommand(query);
