@@ -13,7 +13,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<int> SaveGuestAsync(string email)
+        public async Task<long> SaveGuestAsync(string email)
         {
             const string query = "INSERT INTO [dbo].[Guests] ([Email]) " +
                                  "VALUES (@GuestEmail); SELECT SCOPE_IDENTITY();";
@@ -23,7 +23,7 @@
 
             await _connection.OpenAsync().ConfigureAwait(false);
 
-            var idValue = Convert.ToInt32(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            var idValue = Convert.ToInt64(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
             
             await _connection.CloseAsync().ConfigureAwait(false);
 

@@ -9,7 +9,7 @@
         /// </summary>
         /// <param name="email">The guest email.</param>
         /// <returns>The created guest Id.</returns>
-        Task<int> SaveGuestAsync(string email);
+        Task<long> SaveGuestAsync(string email);
 
         /// <summary>
         /// Verifies if a guest exists by its email.

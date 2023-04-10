@@ -33,7 +33,7 @@
 
             await _connection.OpenAsync().ConfigureAwait(false);
 
-            var idValue = (long)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+            var idValue = Convert.ToInt64(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
 
             await _connection.CloseAsync().ConfigureAwait(false);
 
