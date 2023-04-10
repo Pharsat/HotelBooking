@@ -13,9 +13,22 @@
         }
 
         /// <inheritdoc/>
-        public Task<int> SaveGuestAsync(string email)
+        public async Task<int> SaveGuestAsync(string email)
         {
-            throw new NotImplementedException();
+            var rooms = new List<Room>();
+
+            const string query = "INSERT INTO [dbo].[Guests] ([Email]) VALUES (@GuestEmail); SELECT SCOPE_IDENTITY();";
+
+            using var connection = _connection;
+
+            var command = connection.CreateCommand(query);
+            command.Parameters.AddWithValue("@GuestEmail", email);
+
+            await connection.OpenAsync().ConfigureAwait(false);
+
+            var idValue = (int)(await command.ExecuteScalarAsync().ConfigureAwait(false) ?? 0);
+
+            return idValue;
         }
 
         /// <inheritdoc/>
