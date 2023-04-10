@@ -29,7 +29,7 @@
                      createBookingModel.ReservationEndDateUtc)
                  .ConfigureAwait(false);
 
-            return CreatedAtRoute("guests/{guestEmail}/bookings", new { guestEmail = createBookingModel.GuestEmail }, booking);
+            return Ok(booking);
         }
 
         [HttpPut]
