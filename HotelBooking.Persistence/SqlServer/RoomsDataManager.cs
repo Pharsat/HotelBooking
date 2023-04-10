@@ -16,7 +16,8 @@
         /// <inheritdoc/>
         public async Task<IList<Room>> GetRoomsAsync()
         {
-            const string query = "SELECT [Id], [Name] FROM [dbo].[Rooms]";
+            const string query = "SELECT [Id], [Name] " +
+                                 "FROM [dbo].[Rooms]";
 
             using var connection = _connection;
 

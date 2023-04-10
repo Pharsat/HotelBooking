@@ -15,7 +15,8 @@
         /// <inheritdoc/>
         public async Task<int> SaveGuestAsync(string email)
         {
-            const string query = "INSERT INTO [dbo].[Guests] ([Email]) VALUES (@GuestEmail); SELECT SCOPE_IDENTITY();";
+            const string query = "INSERT INTO [dbo].[Guests] ([Email]) " +
+                                 "VALUES (@GuestEmail); SELECT SCOPE_IDENTITY();";
 
             using var connection = _connection;
 
@@ -32,7 +33,9 @@
         /// <inheritdoc/>
         public async Task<bool> ExistsByEmailAsync(string email)
         {
-            const string query = "SELECT COUNT(*) FROM [dbo].[Guests] WHERE Email = @GuestEmail";
+            const string query = "SELECT COUNT(*) " +
+                                 "FROM [dbo].[Guests] " +
+                                 "WHERE Email = @GuestEmail";
 
             using var connection = _connection;
 
@@ -49,7 +52,9 @@
         /// <inheritdoc/>
         public async Task<Guest> GetGuestByEmailAsync(string email)
         {
-            const string query = "SELECT [Id], [Email] FROM [dbo].[Guests] WHERE Email = @GuestEmail";
+            const string query = "SELECT [Id], [Email] " +
+                                 "FROM [dbo].[Guests] " +
+                                 "WHERE Email = @GuestEmail";
 
             using var connection = _connection;
 
@@ -73,7 +78,9 @@
         /// <inheritdoc/>
         public async Task<Guest> GetGuestByIdAsync(long id)
         {
-            const string query = "SELECT [Id], [Email] FROM [dbo].[Guests] WHERE Id = @GuestId";
+            const string query = "SELECT [Id], [Email] " +
+                                 "FROM [dbo].[Guests] " +
+                                 "WHERE Id = @GuestId";
 
             using var connection = _connection;
 
