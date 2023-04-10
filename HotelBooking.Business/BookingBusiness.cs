@@ -31,6 +31,9 @@
         /// <inheritdoc/>
         public async Task BookARoomAsync(byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate)
         {
+            reservationStartDate = new DateTime(reservationStartDate.Year, reservationStartDate.Month, reservationStartDate.Day, 0, 0, 0);
+            reservationEndDate = new DateTime(reservationEndDate.Year, reservationEndDate.Month, reservationEndDate.Day, 23, 59, 59);
+
             MakeCommonValidationsForBooking(reservationStartDate, reservationEndDate);
 
             using var transactionScope = new TransactionScope();
@@ -76,6 +79,9 @@
         /// <inheritdoc/>
         public async Task AlterABookingAsync(long bookingId, byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate)
         {
+            reservationStartDate = new DateTime(reservationStartDate.Year, reservationStartDate.Month, reservationStartDate.Day, 0, 0, 0);
+            reservationEndDate = new DateTime(reservationEndDate.Year, reservationEndDate.Month, reservationEndDate.Day, 23, 59, 59);
+
             MakeCommonValidationsForBooking(reservationStartDate, reservationEndDate);
 
             using var transactionScope = new TransactionScope();
