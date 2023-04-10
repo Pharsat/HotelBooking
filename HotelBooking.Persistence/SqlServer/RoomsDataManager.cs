@@ -16,8 +16,6 @@
         /// <inheritdoc/>
         public async Task<IList<Room>> GetRoomsAsync()
         {
-            var rooms = new List<Room>();
-
             const string query = "SELECT [Id], [Name] FROM [dbo].[Rooms]";
 
             using var connection = _connection;
@@ -26,6 +24,8 @@
 
             await connection.OpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
+            var rooms = new List<Room>();
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
