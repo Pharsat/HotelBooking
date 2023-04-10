@@ -21,15 +21,15 @@
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            await _bookingBusiness
-                .BookARoomAsync(
-                    createBookingModel.RoomId,
-                    createBookingModel.GuestEmail,
-                    createBookingModel.ReservationStartDateUtc,
-                    createBookingModel.ReservationEndDateUtc)
-                .ConfigureAwait(false);
+            var booking = await _bookingBusiness
+                 .BookARoomAsync(
+                     createBookingModel.RoomId,
+                     createBookingModel.GuestEmail,
+                     createBookingModel.ReservationStartDateUtc,
+                     createBookingModel.ReservationEndDateUtc)
+                 .ConfigureAwait(false);
 
-            return Ok();
+            return CreatedAtRoute("guests/{guestEmail}/bookings", new { guestEmail = createBookingModel.GuestEmail }, booking);
         }
 
         [HttpPut]

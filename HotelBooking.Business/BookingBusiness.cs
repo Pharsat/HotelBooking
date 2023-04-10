@@ -30,7 +30,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task BookARoomAsync(byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate)
+        public async Task<Booking> BookARoomAsync(byte roomId, string guestEmail, DateTime reservationStartDate, DateTime reservationEndDate)
         {
             reservationStartDate = new DateTime(reservationStartDate.Year, reservationStartDate.Month, reservationStartDate.Day, 0, 0, 0);
             reservationEndDate = new DateTime(reservationEndDate.Year, reservationEndDate.Month, reservationEndDate.Day, 23, 59, 59);
@@ -67,14 +67,18 @@
                     BookingCreationTime = _dateTimeProvider.GetUtcDateTime()
                 };
 
-                await _bookingDataManager.SaveBookingAsync(booking).ConfigureAwait(false);
+                var bookingId = await _bookingDataManager.SaveBookingAsync(booking).ConfigureAwait(false);
+
+                transactionScope.Complete();
+
+                booking.Id = bookingId;
+
+                return booking;
             }
             else
             {
                 throw new BookingBusinessException($"The room is not available between the dates  {reservationStartDate} - {reservationEndDate} ");
             }
-
-            transactionScope.Complete();
         }
 
         /// <inheritdoc/>
