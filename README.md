@@ -15,6 +15,9 @@ Next are some of my considerations when I coded this sample:
 * Cache is implemented for the get rooms endpoint which does not require a short refresh. Also, a very short cache has been implemented for bookings endpoints. This will improve a little availability.
 * Exception filter for controllers has been implemented to not repeat exceptions everywhere. The stack trace is filtered for 500 server errors, for security reasons, like a hacker seeing the stack trace.
 * Try to do not to use reflection as this may make the execution heavy.
+
+## Containerization:
+The project has been configured to be contained with docker, you ask for a "the quality of service must be 99.99 to 100% => no downtime" condition, and this is affected in its majority by infrastructure, merging scalability and elasticity NFRs, containerization will allow this stateless service to be 99.99% like stable and to have not downtime.
  
 ## Layers: 
 Following KISS (Keep It Simple…),
