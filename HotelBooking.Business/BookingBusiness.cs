@@ -16,17 +16,20 @@
         private readonly IDateTimeUtcProvider _dateTimeProvider;
         private readonly IRoomsDataManager _roomsDataManager;
         private readonly IGuestsDataManager _guestsDataManager;
+        private readonly IBookingValidations _bookingValidations;
 
         public BookingBusiness(
             IBookingsDataManager bookingDataManager,
             IDateTimeUtcProvider dateTimeProvider,
             IRoomsDataManager roomsDataManager,
-            IGuestsDataManager guestsDataManager)
+            IGuestsDataManager guestsDataManager,
+            IBookingValidations bookingValidations)
         {
             _bookingDataManager = bookingDataManager;
             _dateTimeProvider = dateTimeProvider;
             _roomsDataManager = roomsDataManager;
             _guestsDataManager = guestsDataManager;
+            _bookingValidations = bookingValidations;
         }
 
         /// <inheritdoc/>
@@ -169,69 +172,25 @@
         /// <exception cref="BookingBusinessException">Happens in multiple scenarios, described in messages.</exception>
         private void MakeCommonValidationsForBooking(DateTime reservationStartDate, DateTime reservationEndDate)
         {
-            if (!ReservationEndDateIsGreaterOrEqualThanReservationStartDate(reservationStartDate, reservationEndDate))
+            if (!_bookingValidations.ReservationEndDateIsGreaterOrEqualThanReservationStartDate(reservationStartDate, reservationEndDate))
             {
                 throw new BookingBusinessException($"The booking from date {reservationStartDate} is greater than booking to date {reservationEndDate}.");
             }
 
-            if (!BookedTimeIsLessOrEqualThan3Days(reservationStartDate, reservationEndDate))
+            if (!_bookingValidations.BookedTimeIsLessOrEqualThan3Days(reservationStartDate, reservationEndDate))
             {
                 throw new BookingBusinessException($"The booking time is greater than 3 days {reservationStartDate} - {reservationEndDate}.");
             }
 
-            if (!TheReservationStartDateIsAtLeastNextDay(reservationStartDate))
+            if (!_bookingValidations.TheReservationStartDateIsAtLeastNextDay(reservationStartDate))
             {
                 throw new BookingBusinessException($"The reservation start date {reservationStartDate} must be at least next day.");
             }
 
-            if (!BookingIsMade30DaysInAdvance(reservationStartDate))
+            if (!_bookingValidations.BookingIsMade30DaysInAdvance(reservationStartDate))
             {
                 throw new BookingBusinessException($"The booking is not made 30 days in advance {reservationStartDate}.");
             }
-        }
-
-        /// <summary>
-        /// Validates the reservation time is not more than 3 days.
-        /// </summary>
-        /// <param name="reservationStartDate">The reservation start date.</param>
-        /// <param name="reservationEndDate">The reservation end date.</param>
-        /// <returns>The result of the validation.</returns>
-        private bool BookedTimeIsLessOrEqualThan3Days(DateTime reservationStartDate, DateTime reservationEndDate)
-        {
-            return (reservationEndDate - reservationStartDate).Days <= 3;
-        }
-
-        /// <summary>
-        /// Validates the reserved start date is not today or before.
-        /// </summary>
-        /// <param name="reservationStartDate">The reservation start date.</param>
-        /// <returns>The result of the validation.</returns>
-        private bool TheReservationStartDateIsAtLeastNextDay(DateTime reservationStartDate)
-        {
-            return reservationStartDate.Date > _dateTimeProvider.GetUtcDateTime().Date;
-        }
-
-        /// <summary>
-        /// Validates the reservation start date is less than end date.
-        /// </summary>
-        /// <param name="reservationStartDate">The reservation start date.</param>
-        /// <param name="reservationEndDate">The reservation end date.</param>
-        /// <returns>The result of the validation.</returns>
-        private bool ReservationEndDateIsGreaterOrEqualThanReservationStartDate(DateTime reservationStartDate, DateTime reservationEndDate)
-        {
-            return reservationEndDate >= reservationStartDate;
-        }
-
-        /// <summary>
-        /// Validates the reservation is made 30 days in advance.
-        /// </summary>
-        /// <param name="reservationStartDate">The reservation start date.</param>
-        /// <returns>The result of the validation.</returns>
-        private bool BookingIsMade30DaysInAdvance(DateTime reservationStartDate)
-        {
-            var currentDateTime = _dateTimeProvider.GetUtcDateTime();
-
-            return currentDateTime >= reservationStartDate.AddDays(-30);
         }
     }
 }
